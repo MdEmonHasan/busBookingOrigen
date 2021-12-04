@@ -1,28 +1,15 @@
 package com.createapp.busbooking;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CompoundButton;
-import android.widget.TextView;
-import android.widget.Toast;
-import android.widget.ToggleButton;
 
-import com.createapp.busbooking.RoomDB.SelectedSets;
-import com.createapp.busbooking.RoomDB.SelectedSetsDatabase;
-import com.createapp.busbooking.adapter.MainActivityAdapter;
 import com.createapp.busbooking.adapter.SetPlanAdapter;
 import com.createapp.busbooking.databinding.ActivitySetBinding;
 import com.createapp.busbooking.model.BookedSetInfo;
@@ -39,7 +26,7 @@ import java.util.List;
 
 public class SetActivity extends AppCompatActivity {
 //    ToggleButton a1,a2,b1,b2,c1,c2;
-    Button confirmBtn,confirmBtn2;
+    Button confirmBtn;
     List<String> confirmSetList;
     String busUid;
     List<BookedSetInfo> bookedSetInfoList;
@@ -47,13 +34,13 @@ public class SetActivity extends AppCompatActivity {
     List<BusSetPlan> busSetPlanList2;
 
     int listIndex;
-    int leftSideSetLength;
-    int rightSideSetLength;
+    int SetLength;
     DatabaseReference databaseReference;
     RecyclerView rightSideSetPlanRecycleView;
-    RecyclerView leftSideSetPlanRecycleView;
+
     ActivitySetBinding binding;
     SetPlanAdapter setPlanAdapter;
+
 
 
     @Override
@@ -64,18 +51,23 @@ public class SetActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
 
+
+
+
         rightSideSetPlanRecycleView = findViewById(R.id.rightSideSetPlanRecycleView);
-        leftSideSetPlanRecycleView = findViewById(R.id.leftSideSetPlanRecycleView);
+
+        String[] rightSideSetNumber = {"a3", "a4", "b3","b4","c3",
+                "c4","d3","d4","e3","e4","f3","f4","g3","g4"
+                ,"h3","h4","i3","i4","j3","j4","k3","k4"};
+        String[] leftSideSetNumber = {"a1", "a2","b1","b2","c1","c2","d1","d2","e1","e2","f1","f2","g1","g2"
+                ,"h1","h2","i1","i2","i3","i4","j1","j2","j3","j4","k1","k2","k3","k4"};
 
 
-
-        String[] rightSideSetNumber = {"a3", "a4", "b3","b4","c3","c4","d3","d4","e3","e4","f3","f4","g3","g4","h3","h4","i3","i4","j3","j4","k3","k4"};
-        String[] leftSideSetNumber = {"a1", "a2", "b1","b2","c1","c2","d1","d2","e1","e2","f1","f2","g1","g2","h1","h2","i1","i2","j1","j2","k1","k2"};
 
         busUid = getIntent().getStringExtra("busUid");
 
         confirmBtn = findViewById(R.id.confirmBtn);
-        confirmBtn2 = findViewById(R.id.confirmBtn2);
+
         confirmSetList = new ArrayList<>();
         bookedSetInfoList = new ArrayList<>();
         busSetPlanList = new ArrayList<>();
@@ -95,8 +87,7 @@ public class SetActivity extends AppCompatActivity {
                     for (DataSnapshot lastSnapshot: dataSnapshot.getChildren()){
                         if (lastSnapshot.getKey().equals(busUid)){
                             BusInfo busInfo = lastSnapshot.getValue(BusInfo.class);
-                            rightSideSetLength = Integer.parseInt(busInfo.getNumberOfSetInRightSide());
-                            leftSideSetLength = Integer.parseInt(busInfo.getNumberOfSetInLeftSide());
+                            SetLength = Integer.parseInt(busInfo.getNumberOfSets());
 
 
                         }
@@ -105,33 +96,19 @@ public class SetActivity extends AppCompatActivity {
                 }
 
 
-                for(int i= 0; i<rightSideSetLength;i++){
+                for(int i= 0; i<SetLength/2;i++){
                     BusSetPlan busSetPlan = new BusSetPlan(rightSideSetNumber[i]);
+                    BusSetPlan busSetPlan2 = new BusSetPlan(leftSideSetNumber[i]);
                     busSetPlanList.add(busSetPlan);
+                    busSetPlanList2.add(busSetPlan2);
 
 
                 }
                 GridLayoutManager gridLayoutManager = new GridLayoutManager(SetActivity.this,2);
                 rightSideSetPlanRecycleView.setLayoutManager(gridLayoutManager);
 
-                setPlanAdapter = new SetPlanAdapter(SetActivity.this, busSetPlanList,confirmBtn);
+                setPlanAdapter = new SetPlanAdapter(SetActivity.this, busSetPlanList,busSetPlanList2,confirmBtn,busUid);
                 rightSideSetPlanRecycleView.setAdapter(setPlanAdapter);
-
-
-                for(int i= 0; i<leftSideSetLength;i++){
-
-                    BusSetPlan busSetPlan = new BusSetPlan(leftSideSetNumber[i]);
-                    busSetPlanList2.add(busSetPlan);
-
-
-                }
-                GridLayoutManager gridLayoutManager2 = new GridLayoutManager(SetActivity.this,2);
-                leftSideSetPlanRecycleView.setLayoutManager(gridLayoutManager2);
-
-                setPlanAdapter = new SetPlanAdapter(SetActivity.this, busSetPlanList2,confirmBtn2);
-                leftSideSetPlanRecycleView.setAdapter(setPlanAdapter);
-
-
 
 
             }
@@ -143,50 +120,48 @@ public class SetActivity extends AppCompatActivity {
 
         });
         /*Get the length of set End*/
+          /*  databaseReference.child("BookedSets").child(busUid).addValueEventListener(new ValueEventListener() {
+             @Override
+             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                 if (snapshot != null){
 
-/*        databaseReference.child("BookedSets").child(busUid).addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot != null){
+                     for (DataSnapshot dataSnapshot: snapshot.getChildren()){
 
-                    for (DataSnapshot dataSnapshot: snapshot.getChildren()){
-
-                        BookedSetInfo bookedSetInfo = dataSnapshot.getValue(BookedSetInfo.class);
-
-
-                        for(int i = 0; i < bookedSetInfo.getSetName().size(); i++){
+                         BookedSetInfo bookedSetInfo = dataSnapshot.getValue(BookedSetInfo.class);
+                         //Log.i("TaG", "onDataChange: "+ dataSnapshot);
 
 
-                            if (binding.a1.getTextOn().toString().equals(bookedSetInfo.getSetName().get(i))){
-                                stopUserToSelectBookedSet(binding.a1);
-                            }
-                            else if(binding.a2.getTextOn().toString().equals(bookedSetInfo.getSetName().get(i))){
-                                stopUserToSelectBookedSet(binding.a2);
-                            }
-                            else if(binding.b1.getTextOn().toString().equals(bookedSetInfo.getSetName().get(i))){
-                                stopUserToSelectBookedSet(binding.b1);
-                            }
-                            else if(binding.c1.getTextOn().toString().equals(bookedSetInfo.getSetName().get(i))){
-                                stopUserToSelectBookedSet(binding.c1);
-                            }
+
+                         for(int i = 0; i < bookedSetInfo.getSetName().size(); i++) {
+                             Log.i("fromSet", bookedSetInfo.getSetName().get(i));
 
 
-                        }
+//                             if (binding.a1.getTextOn().toString().equals(bookedSetInfo.getSetName().get(i))) {
+//                                 stopUserToSelectBookedSet(binding.a1);
+//                             } else if (binding.a2.getTextOn().toString().equals(bookedSetInfo.getSetName().get(i))) {
+//                                 stopUserToSelectBookedSet(binding.a2);
+//                             } else if (binding.b1.getTextOn().toString().equals(bookedSetInfo.getSetName().get(i))) {
+//                                 stopUserToSelectBookedSet(binding.b1);
+//                             } else if (binding.c1.getTextOn().toString().equals(bookedSetInfo.getSetName().get(i))) {
+//                                 stopUserToSelectBookedSet(binding.c1);
+//                             }
+                         }
 
 
-                    }
-                }
+                     }
 
 
-            }
+                 }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
+             }
 
-            }
-        });
+             @Override
+             public void onCancelled(@NonNull DatabaseError error) {
 
-        binding.a1.setOnCheckedChangeListener((buttonView, isChecked) -> {
+             }
+         });
+
+      binding.a1.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
                 workWithSet(binding.a1);
             } else {
@@ -232,11 +207,6 @@ public class SetActivity extends AppCompatActivity {
 
 
 //        confirmBtn.setOnClickListener(v -> {
-//
-//
-//            for (String set: confirmSetList){
-//                SelectedSetsDatabase.getDatabase(SetActivity.this).selectSetListDAO().createList(new SelectedSets(set));
-//            }
 //
 //            Intent intent = new Intent(SetActivity.this,PaymentActivity.class);
 //            intent.putExtra("busUid",busUid);

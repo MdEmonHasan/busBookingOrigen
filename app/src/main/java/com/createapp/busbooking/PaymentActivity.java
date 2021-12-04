@@ -51,7 +51,7 @@ public class PaymentActivity extends AppCompatActivity {
             dataSetOnDatabaseDeleteFromDAO(buyerId);
 
 
-            Log.i("TAG", "dataSetOnDatabaseDeleteFromDAO: "+ setNames);
+            //Log.i("TAG", "dataSetOnDatabaseDeleteFromDAO: "+ setNames);
 
         });
 

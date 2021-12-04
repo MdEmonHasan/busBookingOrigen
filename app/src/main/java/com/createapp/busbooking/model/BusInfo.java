@@ -3,21 +3,20 @@ package com.createapp.busbooking.model;
 import java.util.List;
 
 public class BusInfo {
-    String busID, busName, busStartLocation, busDestination, busImage,busPrice,numberOfSetInLeftSide,numberOfSetInRightSide;
+    String busID, busName, busStartLocation, busDestination, busImage,busPrice,numberOfSets;
 
 
-    public BusInfo(String busID, String busName, String busStartLocation, String busDestination, String busImage, String busPrice, String numberOfSetInLeftSide, String numberOfSetInRightSide) {
+    public BusInfo() {
+    }
+
+    public BusInfo(String busID, String busName, String busStartLocation, String busDestination, String busImage, String busPrice, String numberOfSets) {
         this.busID = busID;
         this.busName = busName;
         this.busStartLocation = busStartLocation;
         this.busDestination = busDestination;
         this.busImage = busImage;
         this.busPrice = busPrice;
-        this.numberOfSetInLeftSide = numberOfSetInLeftSide;
-        this.numberOfSetInRightSide = numberOfSetInRightSide;
-    }
-
-    public BusInfo() {
+        this.numberOfSets = numberOfSets;
     }
 
     public String getBusID() {
@@ -68,19 +67,11 @@ public class BusInfo {
         this.busPrice = busPrice;
     }
 
-    public String getNumberOfSetInLeftSide() {
-        return numberOfSetInLeftSide;
+    public String getNumberOfSets() {
+        return numberOfSets;
     }
 
-    public void setNumberOfSetInLeftSide(String numberOfSetInLeftSide) {
-        this.numberOfSetInLeftSide = numberOfSetInLeftSide;
-    }
-
-    public String getNumberOfSetInRightSide() {
-        return numberOfSetInRightSide;
-    }
-
-    public void setNumberOfSetInRightSide(String numberOfSetInRightSide) {
-        this.numberOfSetInRightSide = numberOfSetInRightSide;
+    public void setNumberOfSets(String numberOfSets) {
+        this.numberOfSets = numberOfSets;
     }
 }
