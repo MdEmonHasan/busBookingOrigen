@@ -11,9 +11,12 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.createapp.busbooking.adapter.MainActivityAdapter;
+import com.createapp.busbooking.databinding.ActivityMainBinding;
+import com.createapp.busbooking.databinding.ActivitySetBinding;
 import com.createapp.busbooking.model.BusInfo;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -25,23 +28,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-    AutoCompleteTextView searchBar;
     RecyclerView mainRecycleView;
     List<BusInfo> busInfoList;
 
     DatabaseReference databaseReference;
-    AppCompatButton searchBtn;
+
     MainActivityAdapter mainActivityAdapter;
-    String [] movieDoc;
+    String [] busFrom,busTo;
+    ActivityMainBinding binding;
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        searchBar= findViewById(R.id.searchBar);
 
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
         mainRecycleView = findViewById(R.id.mainRecycleView);
-        searchBtn = findViewById(R.id.searchBtn);
+
 
         GridLayoutManager gridLayoutManager = new GridLayoutManager(MainActivity.this,2);
         mainRecycleView.setLayoutManager(gridLayoutManager);
@@ -68,20 +72,18 @@ public class MainActivity extends AppCompatActivity {
                         busInfoList.add(busInfo);
 
 
-                       movieDoc = new String[busInfoList.size()];
+                       busFrom = new String[busInfoList.size()];
+                       busTo = new String[busInfoList.size()];
 
-                       for (int i = 0;i<movieDoc.length;i++){
-                           movieDoc[i] = busInfoList.get(i).getBusName();
-                           Log.i("hello", busInfoList.get(i).getBusName());
+                       for (int i = 0;i<busFrom.length;i++){
+                           busFrom[i] = busInfoList.get(i).getBusStartLocation();
+                           busTo[i] = busInfoList.get(i).getBusDestination();
                        }
 
-                       ArrayAdapter<String> searchArrayAdapter = new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_list_item_1,movieDoc);
-                       searchBar.setAdapter(searchArrayAdapter);
-
-
-
-
-
+                       ArrayAdapter<String> searchArrayAdapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1,busFrom);
+                       ArrayAdapter<String> searchArrayAdapter2 = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1,busTo);
+                       binding.from.setAdapter(searchArrayAdapter);
+                       binding.to.setAdapter(searchArrayAdapter2);
 
                    }
 
@@ -98,21 +100,13 @@ public class MainActivity extends AppCompatActivity {
                 Log.i("TAG", error.toString());
             }
         });
-
-
-
-
-
-
-
-
-
-        searchBtn.setOnClickListener(new View.OnClickListener() {
+        binding.searchBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String getUserInput = searchBar.getText().toString().toLowerCase();
+                String getUserInput = binding.from.getText().toString().toLowerCase();
 
                 processSearch(getUserInput);
+                Toast.makeText(MainActivity.this,"search on process.....",Toast.LENGTH_LONG).show();
             }
 
 
@@ -122,14 +116,23 @@ public class MainActivity extends AppCompatActivity {
 
     }
     private void processSearch(String getUserInput) {
+        List<BusInfo> newBusInfoList;
+        newBusInfoList = new ArrayList<>();
                     for (BusInfo busInfo: busInfoList){
-                        if (busInfo.getBusName().toLowerCase().equals(getUserInput)){
+                        if (busInfo.getBusStartLocation().toLowerCase().equals(getUserInput)){
+                            newBusInfoList.add(
+                                    new BusInfo(busInfo.getBusID(),busInfo.getBusName(),
+                                            busInfo.getBusStartLocation(),busInfo.getBusDestination(),
+                                            busInfo.getBusImage(),busInfo.getBusPrice(),
+                                            busInfo.getNumberOfSets()));
 
 
-
-                            Toast.makeText(MainActivity.this,"search on process.....",Toast.LENGTH_LONG).show();
                         }
+
+
                 }
+        MainActivityAdapter darkAdapter = new MainActivityAdapter(newBusInfoList,MainActivity.this);
+        mainRecycleView.setAdapter(darkAdapter);
 
     }
 }

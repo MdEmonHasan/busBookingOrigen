@@ -34,6 +34,4 @@ public class SelectedSets {
     public void setSetList(String setList) {
         this.setList = setList;
     }
-
-
 }

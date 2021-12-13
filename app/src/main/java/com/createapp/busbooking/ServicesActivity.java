@@ -34,8 +34,5 @@ public class ServicesActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
-
-
     }
 }

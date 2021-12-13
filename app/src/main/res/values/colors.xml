@@ -10,4 +10,5 @@
     <color name="main_bg">#2DBBC5</color>
     <color name="main_yellow">#FFD400</color>
     <color name="main_orange">#EA6B0B</color>
+    <color name="search_bg">#DEE3F1</color>
 </resources>

@@ -24,6 +24,4 @@ public interface SelectSetListDAO {
 
     @Query("SELECT * FROM SelectedSets")
     List<SelectedSets> selectedSetList();
-
-
 }

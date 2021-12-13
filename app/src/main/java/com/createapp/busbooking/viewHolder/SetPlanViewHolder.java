@@ -41,7 +41,7 @@ public class SetPlanViewHolder extends RecyclerView.ViewHolder {
 
     }
 
-    public void getSetThatAlreadyBooked(String busUid){
+    public void getSetThatAlreadyBooked(String busUid, ToggleButton setId){
 
         databaseReference.child("BookedSets").child(busUid).addValueEventListener(new ValueEventListener() {
             @Override
@@ -54,25 +54,15 @@ public class SetPlanViewHolder extends RecyclerView.ViewHolder {
 
 
 
+
                         for(int i = 0; i < bookedSetInfo.getSetName().size(); i++){
-                            Log.i("TAG", bookedSetInfo.getSetName().get(i));
-
-
-//                            if (binding.a1.getTextOn().toString().equals(bookedSetInfo.getSetName().get(i))){
-//                                stopUserToSelectBookedSet(binding.a1);
-//                            }
-//                            else if(binding.a2.getTextOn().toString().equals(bookedSetInfo.getSetName().get(i))){
-//                                stopUserToSelectBookedSet(binding.a2);
-//                            }
-//                            else if(binding.b1.getTextOn().toString().equals(bookedSetInfo.getSetName().get(i))){
-//                                stopUserToSelectBookedSet(binding.b1);
-//                            }
-//                            else if(binding.c1.getTextOn().toString().equals(bookedSetInfo.getSetName().get(i))){
-//                                stopUserToSelectBookedSet(binding.c1);
-//                            }
+                            if (setId.getTextOn().toString().equals(bookedSetInfo.getSetName().get(i))){
+                                setId.setBackgroundColor(Color.argb(255, 252, 82, 3));
+                            }
 
 
                         }
+
 
 
                     }

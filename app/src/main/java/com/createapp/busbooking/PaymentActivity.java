@@ -1,7 +1,9 @@
 package com.createapp.busbooking;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
@@ -10,9 +12,13 @@ import com.createapp.busbooking.RoomDB.SelectedSets;
 import com.createapp.busbooking.RoomDB.SelectedSetsDatabase;
 
 import com.createapp.busbooking.model.BookedSetInfo;
+import com.createapp.busbooking.model.BusInfo;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,9 +57,27 @@ public class PaymentActivity extends AppCompatActivity {
             dataSetOnDatabaseDeleteFromDAO(buyerId);
 
 
-            //Log.i("TAG", "dataSetOnDatabaseDeleteFromDAO: "+ setNames);
-
         });
+
+        /*Get Paymentable price Start*/
+        databaseReference.child("BusInfo").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot dataSnapshot: snapshot.getChildren()){
+                    if (dataSnapshot.getValue().equals(busUid)){
+                        for (DataSnapshot finalSnapshot: dataSnapshot.getChildren()){
+                            BusInfo busInfo = finalSnapshot.getValue(BusInfo.class);
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+        /*Get Paymentable price End*/
 
 
     }
@@ -66,10 +90,6 @@ public class PaymentActivity extends AppCompatActivity {
 
             setNames = (selectedSetsList.get(i).getSetList());
             bookedSetInfoList.add(setNames);
-
-
-
-
         }
         BookedSetInfo bookedSetInfo = new BookedSetInfo(bookedSetInfoList);
 
@@ -79,15 +99,10 @@ public class PaymentActivity extends AppCompatActivity {
             public void onSuccess(Void unused) {
                 Toast.makeText(PaymentActivity.this,"DataBaseCreated",Toast.LENGTH_SHORT).show();
                     SelectedSetsDatabase.getDatabase(PaymentActivity.this).selectSetListDAO().deleteAll();
-
+                selectedSetsList.clear();
+                bookedSetInfoList.clear();
             }
         });
-
-
-
-        
-
-        
     }
 
 

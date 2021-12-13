@@ -14,4 +14,6 @@ public class BusSetPlan {
     public void setSetName(String setName) {
         this.setName = setName;
     }
+
+
 }

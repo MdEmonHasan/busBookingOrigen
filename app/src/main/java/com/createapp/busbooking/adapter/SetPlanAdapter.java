@@ -56,7 +56,11 @@ public class SetPlanAdapter extends RecyclerView.Adapter<SetPlanViewHolder> {
         holder.toggleButton.setTextOn(busSetPlan.getSetName());
         holder.toggleButton2.setTextOn(busSetPlan2.getSetName());
 
-        holder.getSetThatAlreadyBooked(busUid);
+        holder.getSetThatAlreadyBooked(busUid,holder.toggleButton);
+        holder.getSetThatAlreadyBooked(busUid,holder.toggleButton2);
+
+
+
 
         holder.toggleButton.setOnCheckedChangeListener((buttonView, isChecked) -> {
             int color=((ColorDrawable)holder.toggleButton.getBackground()).getColor();
@@ -81,7 +85,6 @@ public class SetPlanAdapter extends RecyclerView.Adapter<SetPlanViewHolder> {
         });
 
         confirmBtn.setOnClickListener(v -> {
-            //Log.i("TAG", "onBindViewHolder: "+confirmSetList);
             holder.setDataIntoLocalDatabase(context,confirmSetList);
             Intent intent = new Intent(context,PaymentActivity.class);
             intent.putExtra("busUid",busUid);
@@ -93,8 +96,6 @@ public class SetPlanAdapter extends RecyclerView.Adapter<SetPlanViewHolder> {
 
 
     }
-
-
 
     @Override
     public int getItemCount() {

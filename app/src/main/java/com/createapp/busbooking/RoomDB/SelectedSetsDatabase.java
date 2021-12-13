@@ -17,8 +17,6 @@ public abstract class SelectedSetsDatabase extends RoomDatabase {
     public static SelectedSetsDatabase getDatabase(Context context){
         if (selectedSetsDatabase == null){
             selectedSetsDatabase = Room.databaseBuilder(context,SelectedSetsDatabase.class,"setData").allowMainThreadQueries().build();
-
-
         }
         return selectedSetsDatabase;
 

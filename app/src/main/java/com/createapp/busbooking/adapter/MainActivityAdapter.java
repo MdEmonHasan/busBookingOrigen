@@ -43,20 +43,10 @@ public class MainActivityAdapter extends RecyclerView.Adapter<LandingCustomHolde
         holder.busFrom.setText(busInfo.getBusStartLocation());
         holder.busDestination.setText(busInfo.getBusDestination());
         Glide.with(context).load(busInfo.getBusImage()).into(holder.busImage);
-//        holder.busImage.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                clickSingleLayoutItem();
-//            }
-//        });
-        holder.mainCard.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                Intent intent = new Intent(context, ServicesActivity.class);
-                intent.putExtra("busId", busInfo.getBusID());
-                context.startActivity(intent);
-            }
+        holder.mainCard.setOnClickListener(v -> {
+            Intent intent = new Intent(context, ServicesActivity.class);
+            intent.putExtra("busId", busInfo.getBusID());
+            context.startActivity(intent);
         });
 
     }
